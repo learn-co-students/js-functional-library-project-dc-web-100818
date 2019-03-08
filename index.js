@@ -125,30 +125,33 @@ fi = (function() {
       }
     },
 
-    uniq: function(col, boolean, cb){
-
-        let newArr = [col[0]]
-        if (!boolean) {
-          for (const el of col) {
-            if (newArr[newArr.length-1]!== el){
-              newArr.push(el)
-            }
-          }
-
-          return newArr
-        } else if (!!boolean && cb) {
-          for (const el of col) {
-            if (newArr.includes(cb(el))) {
-              newArr.push.cb(el)
-            }
-
-          }
-          console.log(newArr)
-          return newArr
+    uniqSorted: function(collection, iteratee) {
+        const sorted = [collection[0]]
+        for (let idx = 1; idx < collection.length; idx++) {
+          if (sorted[idx-1] !== collection[idx])
+            sorted.push(collection[idx])
         }
+        return sorted
+      },
 
-
-    },
+      uniq: function(collection, sorted=false, iteratee=false) {
+        if (sorted) {
+          return fi.uniqSorted(collection, iteratee)
+        } else if (!iteratee) {
+          return Array.from(new Set(collection))
+        } else {
+          const modifiedVals = new Set()
+          const uniqVals = new Set()
+          for (let val of collection) {
+            const moddedVal = iteratee(val)
+            if (!modifiedVals.has(moddedVal)) {
+              modifiedVals.add(moddedVal)
+              uniqVals.add(val)
+            }
+          }
+          return Array.from(uniqVals)
+        }
+      },
 
     keys: function(col){
       let key = []
@@ -174,8 +177,10 @@ fi = (function() {
           }
         }
         return methods
+    },
+    giveMeMore: function () {
+      return true
     }
-
 
   }
 })()
